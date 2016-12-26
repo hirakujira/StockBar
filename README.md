@@ -4,6 +4,8 @@
 
 This tiny apps grabs information of stocks from the Notification Center widget and represents it on the Touch Bar.
 
+StockBar is a demo which shows that Touch Bar could be more useful than just show some buttons you can click by trackpad direcly and quicker in the app, such as "OK" and "Cancel".
+
 ## Using StockBar with BTT
 
 Since you can't add customized buttons in "Control Srtip", you can use [BetterTouchTool](https://www.boastr.net) to add buttons as a workaround.
