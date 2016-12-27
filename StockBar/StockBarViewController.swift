@@ -11,15 +11,23 @@ import Cocoa
 class StockBarViewController: NSViewController {
     let barView = NSView()
     var itemCount: Int = 0
+    var timer: Timer?
+    var systemPref: NSDictionary?
     
     override func loadView() {
         view = NSView()
     }
     
     override func viewDidAppear() {
-        let perfPath = String.init(format: "/Users/%@/Library/Containers/com.apple.ncplugin.stocks/Data/Library/Preferences/com.apple.stocks.plist", NSUserName())
+        setupBarView()
+        start()
+        startTimer()
+    }
 
-        let systemPref = NSDictionary.init(contentsOfFile: perfPath)
+    func setupBarView() {
+        let perfPath = String.init(format: "/Users/%@/Library/Containers/com.apple.ncplugin.stocks/Data/Library/Preferences/com.apple.stocks.plist", NSUserName())
+        
+        systemPref = NSDictionary.init(contentsOfFile: perfPath)
         if (systemPref != nil) {
             
             var stocks = systemPref?["stocks"] as! [NSDictionary]
@@ -40,6 +48,8 @@ class StockBarViewController: NSViewController {
                 let isRising: Bool = (changes as NSString).floatValue >= 0 ? true : false
                 
                 if price.characters.count > 7 {
+//                    let priceValue = (price as NSString).floatValue
+//                    let priceString = String(format: "%.2f", priceValue)
                     price = (price as NSString).substring(to: 6)
                 }
                 
@@ -52,7 +62,7 @@ class StockBarViewController: NSViewController {
                         changes = (changes as NSString).substring(to: 6)
                     }
                 }
-
+                
                 let stockItem = StockItemView.init(name: name, price: price, change: changes, rising: isRising)
                 stockItem.frame = NSRect(x: 220 * x, y: 0, width: 210, height: 30)
                 barView.addSubview(stockItem)
@@ -60,8 +70,11 @@ class StockBarViewController: NSViewController {
             
             
             view.addSubview(barView)
-            start()
         }
+    }
+        
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: Double(itemCount) * 4.0 * 2.0, target: self, selector: #selector(resetBarView), userInfo: nil, repeats: true)
     }
     
     func start() {
@@ -71,5 +84,14 @@ class StockBarViewController: NSViewController {
         animation.fromValue = barView.layer?.position
         animation.toValue = NSValue(point: NSPoint(x: -CGFloat(itemCount * 220), y: 0))
         barView.layer?.add(animation, forKey: "position")
+    }
+    
+    func resetBarView() {
+        for view in barView.subviews {
+            view.removeFromSuperview()
+        }
+//        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFNotificationName.init("StocksDidUpdateQuotesDarwin" as CFString) , nil, nil, true)
+        print("updated")
+        setupBarView()
     }
 }
