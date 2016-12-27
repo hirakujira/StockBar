@@ -18,6 +18,10 @@ Then, check "Show App Default Touch Bar", so that the items of BTT would be disa
 
 ![Config3](BTT_Config_3.jpg)
 
+## Known Issue
+
+It doesn't update stock from the server automatically.
+
 ## Download
 
 [https://github.com/hirakujira/StockBar/releases](https://github.com/hirakujira/StockBar/releases)
